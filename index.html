@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOISORA FES 2025 作戦会議</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- GSAP and Tone.js for animations and sound -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars from explosion effect */
+        }
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        .chat-bubble-left::before {
+            border-width: 8px 12px 8px 0;
+            border-color: transparent #ffffff transparent transparent;
+            left: -12px;
+            top: 12px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .background-image {
+            background-image: url('https://i.imgur.com/Xh4eR6w.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* Style for explosion emojis */
+        .explosion-emoji {
+            position: absolute;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="background-image bg-gray-900 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md mx-auto bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[800px]">
+        <!-- Header -->
+        <header class="bg-slate-900/80 text-white p-3 flex items-center justify-between rounded-t-2xl shadow-lg">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                <h1 class="font-bold text-lg">ヨイソラフェス作戦会議 (7)</h1>
+            </div>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <main id="chat-area" class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- Messages and logo will be appended here -->
+        </main>
+
+        <!-- Choice Area -->
+        <footer id="choice-area" class="p-4 border-t border-slate-700/50">
+            <div id="choices" class="grid grid-cols-1 gap-2">
+                <!-- Choices will be appended here -->
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const chatArea = document.getElementById('chat-area');
+        const choiceArea = document.getElementById('choice-area');
+        const choicesContainer = document.getElementById('choices');
+
+        // Character definitions
+        const characters = {
+            oto: { name: 'おと', avatar: 'https://pbs.twimg.com/profile_images/1942616127693111296/KTgfARQ2_400x400.jpg' },
+            akira: { name: 'アキラ', avatar: 'https://placehold.co/40x40/60a5fa/ffffff?text=A' },
+            yui: { name: 'ユイ', avatar: 'https://placehold.co/40x40/a78bfa/ffffff?text=Y' },
+            kawashii: { name: 'かわしぃ', avatar: 'https://pbs.twimg.com/profile_images/1751672844101312512/p2MkkNhA_400x400.jpg' },
+            kagekin: { name: 'カゲキン', avatar: 'https://pbs.twimg.com/profile_images/1905651963158835200/M06q-esr_400x400.jpg' },
+            kabochashinshi: { name: 'カボチャ紳士', avatar: 'https://pbs.twimg.com/profile_images/1775294690612695040/Eu5cuCVh_400x400.jpg' },
+            user: { name: 'あなた', avatar: '' }
+        };
+
+        // Narrative Script with updated dialogues
+        const script = [
+            { char: 'oto', text: 'みんな、いよいよだね！今年のヨイソラフェス、最高の夏にするよ！🔥' },
+            { char: 'yui', text: 'わー！おとちゃん、待ってました！✨ 今年はどんな感じになるの？' },
+            { char: 'kawashii', text: '俺の出番だな！アートは爆発だ！' },
+            { char: 'oto', text: 'ふふふ… 今年のテーマは「この夏が、青春が、終わりませんように」。学校全体を使った、一夜限りの“共犯”フェスだよ！' },
+            { char: 'akira', text: '“共犯”か。いい響きだ。音楽も、最高のやつを用意しないとな。' },
+            { char: 'kabochashinshi', text: 'うむ！青春だねぇ！私も最高のアイテムを仕入れてきたよ！光るブレスレットとか、特製タオルとか…！' },
+            { char: 'kagekin', text: 'ハローロー！カゲキンだよー！このフェスが成功したら、ミーが生徒会長になるのもホラーショーだねー！' },
+            { char: 'oto', text: 'も〜カゲキンは！とにかく、みんなにお願いがあるんだけど…' },
+            {
+                char: 'oto',
+                text: 'まずは、メインステージになるプールサイドの飾り付けから！どんな雰囲気にしたい？',
+                choices: [
+                    { text: 'キラキラでエモい感じ！✨', next: 'emo_choice' },
+                    { text: '手作り感のある秘密基地みたいに！🏕️', next: 'base_choice' },
+                    { text: '伝説のロックフェスっぽく、カッコよく！🎸', next: 'rock_choice' }
+                ]
+            }
+        ];
+
+        const storyBranches = {
+            emo_choice: [
+                { char: 'yui', text: 'さんせーい！夕暮れの光に反射して、絶対キレイだよ！' },
+                { char: 'kabochashinshi', text: 'エモいは正義！そういう雰囲気のアイテムはよく売れるんだ、私の経験上ね！' },
+                { char: 'kawashii', text: 'エモい爆発もお手の物だぜ。任せな！' },
+                { char: 'oto', text: 'よし、キラキラエモ路線でいこう！じゃあ次は、フェスでやりたいことなんだけど…' },
+                { char: 'oto', text: 'ヨイソラ高校といえば、やっぱり七不思議だよね！👻', next: 'common_route' }
+            ],
+            base_choice: [
+                { char: 'yui', text: '秘密基地！いいじゃん！私たちだけの場所って感じがしてワクワクする！' },
+                { char: 'akira', text: 'なるほど。木の机とか持ち込んで、アコースティックな演奏も映えそうだな。' },
+                { char: 'oto', 'text': '決定！みんなで作り上げる秘密基地にしよう！じゃあ次は、フェスでやりたいことなんだけど…' },
+                { char: 'oto', text: 'ヨイソラ高校といえば、やっぱり七不思議だよね！👻', next: 'common_route' }
+            ],
+            rock_choice: [
+                { char: 'akira', text: 'それだ。伝説の軽音部がやってたみたいに、ガツンとロックなステージにしたい。' },
+                { char: 'kawashii', text: 'ロックなら派手な特効(パイロ)は必須だろう！俺の出番だな！安心してくれ、威力はちゃんと調整するから！…たぶん。' },
+                { char: 'oto', text: 'いいね！伝説のロックフェス、再現しちゃおう！じゃあ次は、フェスでやりたいことなんだけど…' },
+                { char: 'oto', text: 'ヨイソラ高校といえば、やっぱり七不思議だよね！👻', next: 'common_route' }
+            ],
+            common_route: [
+                { char: 'yui', text: '七不思議！「囁く図書室」とか「音楽室の秘密のテープ」とかでしょ？ちょっと怖いけど、気になる…！' },
+                { char: 'kagekin', text: '七不思議！ホラーショーだねー！非科学的だけど、ミーの支持率アップに繋がりそうだよー！ニャーニャー！' },
+                { char: 'akira', text: '音楽室のテープは、ただの噂じゃないらしい。昔のフェスの音源が残ってるって話だ。' },
+                { char: 'oto', text: 'そう！今回のフェスは、ただのライブだけじゃないの。みんなで校舎を探索して、ヨイソラ高校の“記憶”に触れる時間も作りたいんだ。' },
+                {
+                    char: 'oto',
+                    text: 'みんなも、この“共犯者”の一員になってくれる？',
+                    choices: [
+                        { text: 'もちろん！面白そう！', next: 'final_route' },
+                        { text: '最高の夏にしよう！', next: 'final_route' }
+                    ]
+                }
+            ],
+            final_route: [
+                { char: 'oto', text: 'ありがとう！心強いよ！' },
+                { char: 'yui', text: 'みんなでやれば、絶対成功するよ！' },
+                { char: 'akira', text: 'ああ。忘れられない一夜にしてやるさ。' },
+                { char: 'kabochashinshi', text: 'これぞ青春…！私も全力でサポートさせてもらうよ、一人の“生徒”としてね！' },
+                { char: 'oto', text: 'じゃあ、作戦会議はここまで！詳細はまた連絡するね。9月23日、ヨイソラ高校で待ってる！ #YOISORAFES' },
+                { char: 'system', text: 'To be continued...', next: 'show_logo' }
+            ],
+            show_logo: [
+                { char: 'logo' }
+            ]
+        };
+
+        let currentScript = script;
+        let scriptIndex = 0;
+        let soundReady = false;
+
+        document.body.addEventListener('click', () => {
+            if (!soundReady) {
+                Tone.start();
+                soundReady = true;
+            }
+        }, { once: true });
+
+        function createExplosion(element) {
+            if (!soundReady) return;
+            
+            // Sound effect with reduced volume (-18dB)
+            const noise = new Tone.NoiseSynth({
+                noise: { type: 'white' },
+                envelope: { attack: 0.005, decay: 0.2, sustain: 0.1, release: 0.2 }
+            }).toDestination();
+            noise.volume.value = -18;
+
+            const synth = new Tone.Synth({
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 }
+            }).toDestination();
+            synth.volume.value = -18;
+            
+            noise.triggerAttackRelease("8n");
+            synth.triggerAttackRelease("C2", "8n", Tone.now() + 0.05);
+
+            // Animation effect
+            const emojis = ['💥', '🔥', '✨', '💣', '💨'];
+            const rect = element.getBoundingClientRect();
+            const originX = rect.left + rect.width / 2;
+            const originY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 25; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'explosion-emoji';
+                emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                document.body.appendChild(emoji);
+
+                gsap.set(emoji, { left: originX, top: originY });
+
+                gsap.to(emoji, {
+                    x: (Math.random() - 0.5) * 300,
+                    y: (Math.random() - 0.5) * 300,
+                    opacity: 0,
+                    rotation: Math.random() * 720,
+                    duration: Math.random() * 1 + 0.5,
+                    ease: "power2.out",
+                    onComplete: () => emoji.remove()
+                });
+            }
+        }
+
+        function addMessage(char, text) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const character = characters[char];
+                    const messageWrapper = document.createElement('div');
+                    messageWrapper.className = 'flex items-start gap-3 fade-in';
+
+                    const avatar = document.createElement('img');
+                    avatar.src = character.avatar;
+                    avatar.alt = character.name;
+                    avatar.className = 'w-10 h-10 rounded-full shadow-md object-cover';
+                    avatar.onerror = () => { avatar.src = 'https://placehold.co/40x40/cccccc/ffffff?text=?'; };
+
+                    const messageContent = document.createElement('div');
+                    
+                    const name = document.createElement('div');
+                    name.className = 'text-sm text-gray-300 font-bold';
+                    name.textContent = character.name;
+
+                    const bubble = document.createElement('div');
+                    bubble.className = 'chat-bubble chat-bubble-left relative mt-1 bg-white text-gray-800 p-3 rounded-lg rounded-tl-none shadow-md max-w-xs';
+                    bubble.textContent = text;
+                    
+                    if (char === 'kawashii') {
+                        bubble.style.cursor = 'pointer';
+                        bubble.addEventListener('click', () => createExplosion(bubble));
+                    }
+
+                    messageContent.appendChild(name);
+                    messageContent.appendChild(bubble);
+                    messageWrapper.appendChild(avatar);
+                    messageWrapper.appendChild(messageContent);
+                    
+                    chatArea.appendChild(messageWrapper);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                    resolve();
+                }, Math.random() * 2000 + 2000);
+            });
+        }
+        
+        function addSystemMessage(text) {
+             return new Promise(resolve => {
+                setTimeout(() => {
+                    const messageWrapper = document.createElement('div');
+                    messageWrapper.className = 'text-center text-sm text-purple-300 py-2 fade-in';
+                    messageWrapper.textContent = text;
+                    chatArea.appendChild(messageWrapper);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                    resolve();
+                }, 1000);
+             });
+        }
+
+        function showLogo() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const logoContainer = document.createElement('div');
+                    logoContainer.className = 'text-center mt-4 fade-in';
+                    const logoImg = document.createElement('img');
+                    logoImg.src = 'https://i.imgur.com/CFch2EA.png';
+                    logoImg.alt = 'Yoisora Fes Logo';
+                    logoImg.className = 'mx-auto max-w-xs';
+                    logoContainer.appendChild(logoImg);
+                    chatArea.appendChild(logoContainer);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                    resolve();
+                }, 1000);
+            });
+        }
+
+        function showChoices(choices) {
+            choicesContainer.innerHTML = '';
+            choiceArea.classList.remove('opacity-0');
+            choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-lg transform hover:scale-105';
+                button.textContent = choice.text;
+                button.onclick = () => handleChoice(choice.next);
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function handleChoice(nextBranchKey) {
+            choicesContainer.innerHTML = '';
+            
+            const userChoiceText = event.target.textContent;
+            const userMessageWrapper = document.createElement('div');
+            userMessageWrapper.className = 'flex items-start gap-3 fade-in justify-end';
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'relative mt-1 bg-purple-500 text-white p-3 rounded-lg rounded-br-none shadow-md max-w-xs';
+            bubble.textContent = userChoiceText;
+
+            userMessageWrapper.appendChild(bubble);
+            chatArea.appendChild(userMessageWrapper);
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            currentScript = storyBranches[nextBranchKey];
+            scriptIndex = 0;
+            playScript();
+        }
+
+        async function playScript() {
+            if (scriptIndex < currentScript.length) {
+                const line = currentScript[scriptIndex];
+                
+                if (line.char === 'system') {
+                    await addSystemMessage(line.text);
+                } else if (line.char === 'logo') {
+                    await showLogo();
+                }
+                else {
+                    await addMessage(line.char, line.text);
+                }
+
+                if (line.choices) {
+                    showChoices(line.choices);
+                } else if (line.next) {
+                    currentScript = storyBranches[line.next];
+                    scriptIndex = 0;
+                    playScript();
+                } else {
+                    scriptIndex++;
+                    playScript();
+                }
+            }
+        }
+
+        window.onload = () => {
+            playScript();
+        };
+    </script>
+</body>
+</html>
