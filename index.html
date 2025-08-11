@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOISORA FES 2025 作戦会議</title>
+
+    <!-- OGP Tags for Social Sharing -->
+    <meta property="og:title" content="YOISORA FES 2025 作戦会議">
+    <meta property="og:description" content="この夏が、青春が、終わりませんように。最高の“共犯”フェス、計画始動！">
+    <meta property="og:image" content="https://i.imgur.com/Xh4eR6w.png">
+    <meta property="og:url" content="https://yoisorafes.studio.site/">
+    <meta name="twitter:card" content="summary_large_image">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +22,7 @@
     <style>
         body {
             font-family: 'Noto Sans JP', 'Inter', sans-serif;
-            overflow: hidden; /* Prevent scrollbars from explosion effect */
+            overflow: hidden;
         }
         .chat-bubble::before {
             content: '';
@@ -42,35 +50,109 @@
             background-position: center;
             background-attachment: fixed;
         }
-        /* Style for explosion emojis */
         .explosion-emoji {
             position: absolute;
             font-size: 24px;
             user-select: none;
             pointer-events: none;
         }
+        .action-button-container {
+            position: fixed;
+            top: 50%;
+            right: 0.5rem; /* Adjusted for smaller screens */
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+        .action-button {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 9999px;
+            width: 44px; /* Adjusted for smaller screens */
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .action-button:hover {
+            transform: scale(1.1);
+            background-color: white;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        .side-panel-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            padding-left: 1rem;
+            pointer-events: none; /* Pass clicks through container */
+        }
+        .side-panel-content {
+            pointer-events: auto; /* Enable clicks on content */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 90vh;
+        }
+        .episode-nav {
+            width: 240px; /* Fixed width */
+        }
     </style>
 </head>
 <body class="background-image bg-gray-900 flex items-center justify-center min-h-screen">
 
+    <!-- Episode Navigation Panel (for desktop) -->
+    <div id="side-panel-container" class="side-panel-container hidden md:flex">
+        <div class="side-panel-content">
+            <!-- Episode Navigation -->
+            <div class="episode-nav bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl shadow-2xl overflow-y-auto">
+                <h2 class="text-white font-bold text-lg mb-4 text-center border-b border-slate-700 pb-2">エピソード</h2>
+                <div id="episode-list" class="space-y-2">
+                    <!-- Episodes will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Episode Toggle Button (for mobile) -->
+    <button id="episode-toggle-button" class="md:hidden fixed top-4 left-4 z-[160] bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg">
+        <svg class="w-6 h-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+    </button>
+
+
+    <!-- Main Chat UI -->
     <div class="w-full max-w-md mx-auto bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[800px]">
-        <!-- Header -->
         <header class="bg-slate-900/80 text-white p-3 flex items-center justify-between rounded-t-2xl shadow-lg">
             <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                <h1 class="font-bold text-lg">ヨイソラフェス作戦会議 (7)</h1>
+                <h1 id="chat-title" class="font-bold text-lg ml-2">ヨイソラフェス作戦会議 (10)</h1>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
             </div>
         </header>
 
-        <!-- Chat Area -->
         <main id="chat-area" class="flex-1 p-4 overflow-y-auto space-y-4">
             <!-- Messages and logo will be appended here -->
         </main>
 
-        <!-- Choice Area -->
         <footer id="choice-area" class="p-4 border-t border-slate-700/50">
             <div id="choices" class="grid grid-cols-1 gap-2">
                 <!-- Choices will be appended here -->
@@ -78,10 +160,62 @@
         </footer>
     </div>
 
+    <!-- Floating Action Buttons -->
+    <div class="action-button-container">
+        <button onclick="shareOnX()" class="action-button" title="Xでシェアする">
+            <svg class="w-5 h-5 text-gray-800" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+        </button>
+        <button id="open-modal-button" class="action-button" title="桜兎フルガについて">
+            <img src="https://pbs.twimg.com/profile_images/1942616127693111296/KTgfARQ2_400x400.jpg" class="w-7 h-7 rounded-full object-cover">
+        </button>
+    </div>
+
+    <!-- Oto Furuga Profile Modal -->
+    <div id="profile-modal" class="modal-overlay hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-sm p-6 relative text-gray-800 fade-in">
+            <button id="close-modal-button" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center">
+                <img src="https://pbs.twimg.com/profile_images/1942616127693111296/KTgfARQ2_400x400.jpg" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-pink-300 shadow-lg">
+                <h2 class="text-2xl font-bold">桜兎フルガ</h2>
+                <p class="text-sm text-pink-500 font-semibold">イベント主催 / バーチャルアイドル</p>
+                <p class="text-xs mt-1 text-gray-500">Project Director</p>
+                
+                <p class="text-sm mt-4 text-left p-4 bg-pink-50 rounded-lg">
+                    「このフェス･･･エモい!!」って言わせたい。<br>
+                    バーチャルアイドルとして活動する傍ら、自ら企画・演出を手がけるマルチクリエイター。メタバースでの豊富なイベント主催経験を活かし、青春と没入感あふれる一夜をプロデュースする。
+                </p>
+
+                <div class="flex gap-4 mt-6">
+                    <a href="https://x.com/oto_furuga" target="_blank" class="flex-1 bg-gray-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-900 transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        X
+                    </a>
+                    <a href="https://www.youtube.com/@otofuruga" target="_blank" class="flex-1 bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"></path></svg>
+                        YouTube
+                    </a>
+                </div>
+            </div>
+            <!-- Secret button for debug menu -->
+            <div id="secret-button" class="absolute bottom-1 right-1 w-8 h-8 cursor-pointer"></div>
+        </div>
+    </div>
+
     <script>
         const chatArea = document.getElementById('chat-area');
         const choiceArea = document.getElementById('choice-area');
         const choicesContainer = document.getElementById('choices');
+        const profileModal = document.getElementById('profile-modal');
+        const openModalButton = document.getElementById('open-modal-button');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const episodeListContainer = document.getElementById('episode-list');
+        const sidePanelContainer = document.getElementById('side-panel-container');
+        const episodeToggleButton = document.getElementById('episode-toggle-button');
+        const chatTitle = document.getElementById('chat-title');
+        const secretButton = document.getElementById('secret-button');
+
 
         // Character definitions
         const characters = {
@@ -91,29 +225,103 @@
             kawashii: { name: 'かわしぃ', avatar: 'https://pbs.twimg.com/profile_images/1751672844101312512/p2MkkNhA_400x400.jpg' },
             kagekin: { name: 'カゲキン', avatar: 'https://pbs.twimg.com/profile_images/1905651963158835200/M06q-esr_400x400.jpg' },
             kabochashinshi: { name: 'カボチャ紳士', avatar: 'https://pbs.twimg.com/profile_images/1775294690612695040/Eu5cuCVh_400x400.jpg' },
+            motoji: { name: 'もとじ', avatar: 'https://i.imgur.com/SgA0O3T.png' },
+            susukinitsuki: { name: 'すすきにつき', avatar: 'https://i.imgur.com/LRAb70b.png' },
+            penguin: { name: 'ぺんぎん！', avatar: 'https://i.imgur.com/h5Rvyxf.png' },
             user: { name: 'あなた', avatar: '' }
         };
 
-        // Narrative Script with updated dialogues
-        const script = [
-            { char: 'oto', text: 'みんな、いよいよだね！今年のヨイソラフェス、最高の夏にするよ！🔥' },
-            { char: 'yui', text: 'わー！おとちゃん、待ってました！✨ 今年はどんな感じになるの？' },
-            { char: 'kawashii', text: '俺の出番だな！アートは爆発だ！' },
-            { char: 'oto', text: 'ふふふ… 今年のテーマは「この夏が、青春が、終わりませんように」。学校全体を使った、一夜限りの“共犯”フェスだよ！' },
-            { char: 'akira', text: '“共犯”か。いい響きだ。音楽も、最高のやつを用意しないとな。' },
-            { char: 'kabochashinshi', text: 'うむ！青春だねぇ！私も最高のアイテムを仕入れてきたよ！光るブレスレットとか、特製タオルとか…！' },
-            { char: 'kagekin', text: 'ハローロー！カゲキンだよー！このフェスが成功したら、ミーが生徒会長になるのもホラーショーだねー！' },
-            { char: 'oto', text: 'も〜カゲキンは！とにかく、みんなにお願いがあるんだけど…' },
-            {
-                char: 'oto',
-                text: 'まずは、メインステージになるプールサイドの飾り付けから！どんな雰囲気にしたい？',
-                choices: [
-                    { text: 'キラキラでエモい感じ！✨', next: 'emo_choice' },
-                    { text: '手作り感のある秘密基地みたいに！🏕️', next: 'base_choice' },
-                    { text: '伝説のロックフェスっぽく、カッコよく！🎸', next: 'rock_choice' }
-                ]
-            }
+        // Story Episodes
+        const episodes = [
+            { id: 1, title: '第１話 YOISORA FESを始めよう！', releaseDate: '2025-08-10', script: 'ep1_script' },
+            { id: 2, title: '第２話 Virtual Rock BAND「STRiNG5」がやってくる！', releaseDate: '2025-08-17', script: 'ep2_script' },
+            { id: 3, title: '第３話 VRロックバンド『PHANTOM』 出演！！', releaseDate: '2025-08-24', script: 'ep3_script' },
+            { id: 4, title: '第４話 VTuberのロックバンド『LAUTRIV』出演！！', releaseDate: '2025-08-31', script: 'ep4_script' },
+            { id: 5, title: '第５話 劇団テアドルチェ 出演！！', releaseDate: '2025-09-07', script: 'ep5_script' },
+            { id: 6, title: '第６話 いよいよ始まるYOISORA FES！！', releaseDate: '2025-09-10', script: 'ep6_script' }
         ];
+
+        // Narrative Scripts
+        const scripts = {
+            ep1_script: [
+                { char: 'oto', text: 'みんな、いよいよだね！今年のヨイソラフェス、最高の夏にするよ！🔥' },
+                { char: 'yui', text: 'わー！おとちゃん、待ってました！✨ 今年はどんな感じになるの？' },
+                { char: 'kawashii', text: '俺の出番だな！アートは爆発だ！' },
+                { char: 'oto', text: 'ふふふ… 今年のテーマは「この夏が、青春が、終わりませんように」。学校全体を使った、一夜限りの“共犯”フェスだよ！' },
+                { char: 'akira', text: '“共犯”か。いい響きだ。音楽も、最高のやつを用意しないとな。' },
+                { char: 'kabochashinshi', text: 'うむ！青春だねぇ！私も最高のアイテムを仕入れてきたよ！光るブレスレットとか、特製タオルとか…！' },
+                { char: 'kagekin', text: 'ハローロー！カゲキンだよー！このフェスが成功したら、ミーが生徒会長になるのもホラーショーだねー！' },
+                { char: 'susukinitsuki', text: 'このフェスのデザイン、夕暮れから夜空に変わる一瞬の「エモ」を全部詰め込んだから！みんなの心に刻まれるといいな。' },
+                { char: 'motoji', text: 'このフェス、最高のシャッターチャンスしかない…！みんなの青春、一枚残らずフィルムに焼き付けるよ！' },
+                { char: 'penguin', text: 'お、お邪魔します…！ウチ、今回のフェスの警備とサポートを担当します、ぺんぎん！です！' },
+                { char: 'penguin', text: '（す、すー様…！本物…！ウチ、しっかり皆さんの安全を守ります…！）' },
+                { char: 'oto', text: 'みんな揃ったね！心強いな〜！とにかく、みんなにお願いがあるんだけど…' },
+                {
+                    char: 'oto',
+                    text: 'まずは、メインステージになるプールサイドの飾り付けから！どんな雰囲気にしたい？',
+                    choices: [
+                        { text: 'キラキラでエモい感じ！✨', next: 'emo_choice' },
+                        { text: '手作り感のある秘密基地みたいに！🏕️', next: 'base_choice' },
+                        { text: '伝説のロックフェスっぽく、カッコよく！🎸', next: 'rock_choice' }
+                    ]
+                }
+            ],
+            ep2_script: [
+                { char: 'akira', text: 'ステージの飾り付けも決まったし、次は音楽だな。もっとこう、ガツンとくるロックな音が欲しい。' },
+                { char: 'motoji', text: 'なんてこったい、それならSTRiNG5さんなんてどうです！？生演奏が本当に最高で…激推しくんです！' },
+                { char: 'yui', text: 'STRiNG5さん！知ってる！ぴく*さんのギター、かっこいいよね！' },
+                { char: 'oto', text: 'いいね！YouTubeあったよ！みんなも見てみて！\nhttps://www.youtube.com/@STRINGSfrom2024' },
+                { char: 'penguin', text: 'わあ、すごいですね！フェスがもっと盛り上がりそうです！' },
+                { char: 'oto', text: 'よし、ウチが連絡してみる！みんな、成功を祈ってて！' },
+                { char: 'system', text: '（数時間後…）' },
+                { char: 'oto', text: 'みんなー！STRiNG5さん、出演OKだって！やったー！！🎉' },
+                { char: 'kawashii', text: 'おお！やったな！これは派手なステージにしがいがあるぜ！' }
+            ],
+            ep3_script: [
+                { char: 'oto', text: 'STRiNG5さん、決まって嬉しい！もう一組、青春って感じの熱いバンドも呼びたいなー！' },
+                { char: 'oto', text: 'VRロックバンドの『PHANTOM』さんはどうかな？' },
+                { char: 'akira', text: 'PHANTOMか、いいな。彼らの音は魂に響く。このフェスにぴったりだ。' },
+                { char: 'yui', text: 'わ、MV見たけど、GtVo.のふぁんさん、熱いね！青春って感じ！このMVだよ！\nhttps://www.youtube.com/@phantom1552' },
+                { char: 'motoji', text: 'うわー！推しと推しがコラボしやがる…！これは撮るしかない！' },
+                { char: 'oto', text: 'でしょでしょ！よし、またまたウチが交渉してくる！' },
+                { char: 'system', text: '（また数時間後…）' },
+                { char: 'oto', text: 'PHANTOMさんも出演決定！奇跡だ…！最高の夏になる予感しかしない！' }
+            ],
+            ep4_script: [
+                { char: 'oto', text: 'ねえねえみんな、実は…みんなに内緒で動いてたんだけど…サプライズがあるんだ！' },
+                { char: 'yui', text: 'え、なになに！？' },
+                { char: 'oto', text: 'VTuberバンドの『LAUTRIV』さんの出演が決定しましたー！！！' },
+                { char: 'penguin', text: 'えええ！？ゆめ心中さんと頬白ギンコさんのいるあの…！？す、すごいです…！' },
+                { char: 'susukinitsuki', text: 'わ、豪華！どんどんすごいことになっていくね！' },
+                { char: 'yui', text: '本当に！？豪華すぎる！' },
+                { char: 'oto', text: 'うん！こんなに素敵なアーティストさんたちが集まってくれて…最高の思い出が作れそうだね！' }
+            ],
+            ep5_script: [
+                { char: 'susukinitsuki', text: '音楽はすごいことになってきたけど、演劇パートも負けてられないよね。' },
+                { char: 'oto', text: '実は、七不思議探索のナビゲート役として、VR演劇で活躍してる『劇団テアドルチェ』さんに協力してもらえることになったんだ！' },
+                { char: 'system', text: 'おとちゃんが劇団テアドルチェをグループに招待しました。' },
+                { char: 'system', text: '（テアドルチェの誰か）が参加しました。' },
+                { char: 'system', text: '「え、そのフェスってヨイソラ高校でやるの？私たち、3組だけど！？」' },
+                { char: 'yui', text: 'えー！マジで！？同じ学校だったんだ！' },
+                { char: 'motoji', text: 'そういえば、放課後いつも練習してる人たち、見かけてたかも…！まさかテアドルチェさんだったなんて！' },
+                { char: 'penguin', text: 'すごい偶然ですね！ウチ、なんだか感動しちゃいました…！' },
+                { char: 'oto', text: 'すごい偶然！最高の青春を、この学校で一緒に作ろうって伝えたよ！' }
+            ],
+            ep6_script: [
+                { char: 'kawashii', text: 'ステージ装飾、最終調整完了！ドカンと派手にいくぜ！' },
+                { char: 'system', text: 'かわしぃが写真を送信しました。' },
+                { char: 'kabochashinshi', text: '見てくれ、この輝くアクセサリーたちを！青春の思い出作りにぜひ！' },
+                { char: 'system', text: 'カボチャ紳士が写真を送信しました。' },
+                { char: 'motoji', text: 'カメラもレンズも準備万端！みんなの最高の表情、待ってるよ！' },
+                { char: 'penguin', text: '警備ルート、最終確認しました！皆さんの安全はウチが守ります！' },
+                { char: 'kagekin', text: 'フフフ…ミーはついに完成させたぞ！夏を終わらせるのではなく、夏そのものを打倒するための最終兵器、世界クーラーを！' },
+                { char: 'yui', text: 'えぇ！？なにそれ！？' },
+                { char: 'akira', text: '…いや、夏は終わらせたくないだけで、倒さなくていいんだが。' },
+                { char: 'oto', text: 'もー、カゲキンは！でも、みんな準備万端だね！いよいよだね！ **9月23日、18:30に校門前集合！** 絶対に遅れないでね！' },
+                { char: 'system', text: '（えいえいおー！のスタンプが飛び交う）' },
+                { char: 'system', text: 'To be continued...', next: 'show_logo' }
+            ]
+        };
 
         const storyBranches = {
             emo_choice: [
@@ -136,10 +344,11 @@
                 { char: 'oto', text: 'ヨイソラ高校といえば、やっぱり七不思議だよね！👻', next: 'common_route' }
             ],
             common_route: [
-                { char: 'yui', text: '七不思議！「囁く図書室」とか「音楽室の秘密のテープ」とかでしょ？ちょっと怖いけど、気になる…！' },
-                { char: 'kagekin', text: '七不思議！ホラーショーだねー！非科学的だけど、ミーの支持率アップに繋がりそうだよー！ニャーニャー！' },
-                { char: 'akira', text: '音楽室のテープは、ただの噂じゃないらしい。昔のフェスの音源が残ってるって話だ。' },
-                { char: 'oto', text: 'そう！今回のフェスは、ただのライブだけじゃないの。みんなで校舎を探索して、ヨイソラ高校の“記憶”に触れる時間も作りたいんだ。' },
+                { char: 'yui', text: '七不思議！そういえば、美術室の鏡で写真を撮ると何かが映るとか、音楽室のピアノが勝手に鳴るとか、色々噂あるよね…！' },
+                { char: 'akira', text: '生徒会室に代々伝わるっていう謎の玉の話も気になるな。' },
+                { char: 'motoji', text: '美術室で何かが映る…！？なんてこったい、最高のシャッターチャンスじゃないですか！' },
+                { char: 'kagekin', text: '謎の玉！ホラーショーだねー！それを手に入れればミーの支持率も爆上がりだよー！ニャーニャー！' },
+                { char: 'oto', text: 'ふふふ、その通り！今回のフェスは、ただのライブだけじゃないの。みんなで校舎を探索して、ヨイソラ高校の“記憶”に触れる時間も作りたいんだ。' },
                 {
                     char: 'oto',
                     text: 'みんなも、この“共犯者”の一員になってくれる？',
@@ -158,13 +367,15 @@
                 { char: 'system', text: 'To be continued...', next: 'show_logo' }
             ],
             show_logo: [
-                { char: 'logo' }
+                { char: 'logo' },
+                { char: 'final_message' }
             ]
         };
 
-        let currentScript = script;
-        let scriptIndex = 0;
+        let currentEpisodeId = 1;
+        let currentScript = scripts.ep1_script;
         let soundReady = false;
+        let allEpisodesUnlocked = false;
 
         document.body.addEventListener('click', () => {
             if (!soundReady) {
@@ -175,46 +386,23 @@
 
         function createExplosion(element) {
             if (!soundReady) return;
-            
-            // Sound effect with reduced volume (-18dB)
-            const noise = new Tone.NoiseSynth({
-                noise: { type: 'white' },
-                envelope: { attack: 0.005, decay: 0.2, sustain: 0.1, release: 0.2 }
-            }).toDestination();
+            const noise = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.2, sustain: 0.1, release: 0.2 } }).toDestination();
             noise.volume.value = -18;
-
-            const synth = new Tone.Synth({
-                oscillator: { type: 'sine' },
-                envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 }
-            }).toDestination();
+            const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
             synth.volume.value = -18;
-            
             noise.triggerAttackRelease("8n");
             synth.triggerAttackRelease("C2", "8n", Tone.now() + 0.05);
-
-            // Animation effect
             const emojis = ['💥', '🔥', '✨', '💣', '💨'];
             const rect = element.getBoundingClientRect();
             const originX = rect.left + rect.width / 2;
             const originY = rect.top + rect.height / 2;
-
             for (let i = 0; i < 25; i++) {
                 const emoji = document.createElement('div');
                 emoji.className = 'explosion-emoji';
                 emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
                 document.body.appendChild(emoji);
-
                 gsap.set(emoji, { left: originX, top: originY });
-
-                gsap.to(emoji, {
-                    x: (Math.random() - 0.5) * 300,
-                    y: (Math.random() - 0.5) * 300,
-                    opacity: 0,
-                    rotation: Math.random() * 720,
-                    duration: Math.random() * 1 + 0.5,
-                    ease: "power2.out",
-                    onComplete: () => emoji.remove()
-                });
+                gsap.to(emoji, { x: (Math.random() - 0.5) * 300, y: (Math.random() - 0.5) * 300, opacity: 0, rotation: Math.random() * 720, duration: Math.random() * 1 + 0.5, ease: "power2.out", onComplete: () => emoji.remove() });
             }
         }
 
@@ -224,33 +412,42 @@
                     const character = characters[char];
                     const messageWrapper = document.createElement('div');
                     messageWrapper.className = 'flex items-start gap-3 fade-in';
-
                     const avatar = document.createElement('img');
                     avatar.src = character.avatar;
                     avatar.alt = character.name;
                     avatar.className = 'w-10 h-10 rounded-full shadow-md object-cover';
                     avatar.onerror = () => { avatar.src = 'https://placehold.co/40x40/cccccc/ffffff?text=?'; };
-
                     const messageContent = document.createElement('div');
-                    
                     const name = document.createElement('div');
                     name.className = 'text-sm text-gray-300 font-bold';
                     name.textContent = character.name;
-
                     const bubble = document.createElement('div');
-                    bubble.className = 'chat-bubble chat-bubble-left relative mt-1 bg-white text-gray-800 p-3 rounded-lg rounded-tl-none shadow-md max-w-xs';
-                    bubble.textContent = text;
+                    bubble.className = 'chat-bubble chat-bubble-left relative mt-1 bg-white text-gray-800 p-3 rounded-lg rounded-tl-none shadow-md max-w-xs break-words';
                     
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const parts = text.split(urlRegex);
+
+                    parts.forEach(part => {
+                        if (part.match(urlRegex)) {
+                            const link = document.createElement('a');
+                            link.href = part;
+                            link.target = '_blank';
+                            link.className = 'text-blue-600 hover:underline';
+                            link.textContent = part;
+                            bubble.appendChild(link);
+                        } else {
+                            bubble.appendChild(document.createTextNode(part));
+                        }
+                    });
+
                     if (char === 'kawashii') {
                         bubble.style.cursor = 'pointer';
                         bubble.addEventListener('click', () => createExplosion(bubble));
                     }
-
                     messageContent.appendChild(name);
                     messageContent.appendChild(bubble);
                     messageWrapper.appendChild(avatar);
                     messageWrapper.appendChild(messageContent);
-                    
                     chatArea.appendChild(messageWrapper);
                     chatArea.scrollTop = chatArea.scrollHeight;
                     resolve();
@@ -276,16 +473,24 @@
                 setTimeout(() => {
                     const logoContainer = document.createElement('div');
                     logoContainer.className = 'text-center mt-4 fade-in';
+                    const logoLink = document.createElement('a');
+                    logoLink.href = 'https://yoisorafes.studio.site/';
+                    logoLink.target = '_blank';
                     const logoImg = document.createElement('img');
                     logoImg.src = 'https://i.imgur.com/CFch2EA.png';
                     logoImg.alt = 'Yoisora Fes Logo';
                     logoImg.className = 'mx-auto max-w-xs';
-                    logoContainer.appendChild(logoImg);
+                    logoLink.appendChild(logoImg);
+                    logoContainer.appendChild(logoLink);
                     chatArea.appendChild(logoContainer);
                     chatArea.scrollTop = chatArea.scrollHeight;
                     resolve();
                 }, 1000);
             });
+        }
+        
+        function addFinalMessage() {
+            return addMessage('oto', 'フェスの最新情報やグッズのことは、公式サイトをチェックしてね！');
         }
 
         function showChoices(choices) {
@@ -302,52 +507,140 @@
 
         function handleChoice(nextBranchKey) {
             choicesContainer.innerHTML = '';
-            
             const userChoiceText = event.target.textContent;
             const userMessageWrapper = document.createElement('div');
             userMessageWrapper.className = 'flex items-start gap-3 fade-in justify-end';
-            
             const bubble = document.createElement('div');
             bubble.className = 'relative mt-1 bg-purple-500 text-white p-3 rounded-lg rounded-br-none shadow-md max-w-xs';
             bubble.textContent = userChoiceText;
-
             userMessageWrapper.appendChild(bubble);
             chatArea.appendChild(userMessageWrapper);
             chatArea.scrollTop = chatArea.scrollHeight;
-
             currentScript = storyBranches[nextBranchKey];
-            scriptIndex = 0;
-            playScript();
+            playCurrentScript();
         }
 
-        async function playScript() {
-            if (scriptIndex < currentScript.length) {
-                const line = currentScript[scriptIndex];
-                
+        async function playCurrentScript() {
+            for (const line of currentScript) {
                 if (line.char === 'system') {
                     await addSystemMessage(line.text);
                 } else if (line.char === 'logo') {
                     await showLogo();
-                }
-                else {
+                } else if (line.char === 'final_message') {
+                    await addFinalMessage();
+                } else {
                     await addMessage(line.char, line.text);
                 }
-
                 if (line.choices) {
                     showChoices(line.choices);
-                } else if (line.next) {
+                    return; // Stop after showing choices
+                }
+                if (line.next) {
                     currentScript = storyBranches[line.next];
-                    scriptIndex = 0;
-                    playScript();
-                } else {
-                    scriptIndex++;
-                    playScript();
+                    await playCurrentScript(); // Recurse for the next part
+                    return;
                 }
             }
         }
 
+        function loadEpisode(episode) {
+            if (!scripts[episode.script]) return;
+
+            currentEpisodeId = episode.id;
+            currentScript = scripts[episode.script];
+            
+            chatArea.innerHTML = '';
+            choicesContainer.innerHTML = '';
+
+            playCurrentScript();
+            renderEpisodes();
+            if (window.innerWidth < 768) {
+                sidePanelContainer.classList.add('hidden');
+            }
+        }
+        
+        // Episode Navigation Logic
+        function getCurrentDate() {
+            return new Date();
+        }
+
+        function renderEpisodes() {
+            const now = getCurrentDate();
+            episodeListContainer.innerHTML = '';
+            episodes.forEach(episode => {
+                const releaseDate = new Date(episode.releaseDate + 'T00:00:00+09:00');
+                const isUnlocked = allEpisodesUnlocked || now >= releaseDate;
+                
+                const episodeElement = document.createElement('a');
+                
+                let content;
+                if (isUnlocked) {
+                    episodeElement.href = '#';
+                    if(scripts[episode.script]) {
+                        episodeElement.onclick = (e) => {
+                            e.preventDefault();
+                            loadEpisode(episode);
+                        };
+                    }
+
+                    content = `
+                        <div class="text-sm break-words">${episode.title}</div>
+                        <div class="text-xs text-green-400">公開中</div>
+                    `;
+                    episodeElement.className = `block w-full p-3 rounded-lg bg-slate-700/80 hover:bg-slate-600/80 transition ${episode.id === currentEpisodeId ? 'ring-2 ring-pink-500' : ''}`;
+                    if(!scripts[episode.script]) {
+                        episodeElement.className += ' opacity-50 cursor-not-allowed';
+                    }
+                } else {
+                    episodeElement.href = '#';
+                    content = `
+                        <div class="text-sm text-gray-500 break-words">？？？？？？</div>
+                        <div class="text-xs text-gray-400">${releaseDate.getMonth() + 1}/${releaseDate.getDate()} 公開予定</div>
+                    `;
+                    episodeElement.className = 'block w-full p-3 rounded-lg bg-slate-900/50 cursor-not-allowed';
+                }
+                
+                episodeElement.innerHTML = `<div class="text-white">${content}</div>`;
+                episodeListContainer.appendChild(episodeElement);
+            });
+        }
+
+
+        // Modal and Share Button Logic
+        openModalButton.addEventListener('click', () => profileModal.classList.remove('hidden'));
+        closeModalButton.addEventListener('click', () => profileModal.classList.add('hidden'));
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) {
+                profileModal.classList.add('hidden');
+            }
+        });
+        
+        // Secret debug button logic
+        secretButton.addEventListener('click', () => {
+            allEpisodesUnlocked = true;
+            renderEpisodes();
+            alert('全エピソードが開放されました！');
+            profileModal.classList.add('hidden');
+        });
+        
+        // Mobile Episode Panel Toggle
+        episodeToggleButton.addEventListener('click', () => {
+            sidePanelContainer.classList.toggle('hidden');
+        });
+
+
+        function shareOnX() {
+            const text = encodeURIComponent("YOISORA FES 2025 作戦会議に参加しよう！ #YOISORAFES");
+            const url = encodeURIComponent('https://yoisorafes.studio.site/');
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
         window.onload = () => {
-            playScript();
+            const firstEpisode = episodes.find(ep => ep.id === 1);
+            if(firstEpisode) {
+                loadEpisode(firstEpisode);
+            }
+            renderEpisodes();
         };
     </script>
 </body>
