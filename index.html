@@ -142,7 +142,7 @@
     <div class="w-full max-w-md mx-auto bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[800px]">
         <header class="bg-slate-900/80 text-white p-3 flex items-center justify-between rounded-t-2xl shadow-lg">
             <div class="flex items-center">
-                <h1 id="chat-title" class="font-bold text-lg ml-2">ヨイソラフェス作戦会議 (10)</h1>
+                <h1 id="chat-title" class="font-bold text-lg ml-2">ヨイソラフェス作戦会議 (11)</h1>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
@@ -226,8 +226,9 @@
             kagekin: { name: 'カゲキン', avatar: 'https://pbs.twimg.com/profile_images/1905651963158835200/M06q-esr_400x400.jpg' },
             kabochashinshi: { name: 'カボチャ紳士', avatar: 'https://pbs.twimg.com/profile_images/1775294690612695040/Eu5cuCVh_400x400.jpg' },
             motoji: { name: 'もとじ', avatar: 'https://i.imgur.com/SgA0O3T.png' },
-            susukinitsuki: { name: 'すすきにつき', avatar: 'https://i.imgur.com/LRAb70b.png' },
+            susukinitsuki: { name: 'すすきにつき', avatar: 'https://i.imgur.com/LemWuFU.png' },
             penguin: { name: 'ぺんぎん！', avatar: 'https://i.imgur.com/h5Rvyxf.png' },
+            linda: { name: 'Linda', avatar: 'https://i.imgur.com/C8Xg94r.png' },
             user: { name: 'あなた', avatar: '' }
         };
 
@@ -255,6 +256,7 @@
                 { char: 'motoji', text: 'このフェス、最高のシャッターチャンスしかない…！みんなの青春、一枚残らずフィルムに焼き付けるよ！' },
                 { char: 'penguin', text: 'お、お邪魔します…！ウチ、今回のフェスの警備とサポートを担当します、ぺんぎん！です！' },
                 { char: 'penguin', text: '（す、すー様…！本物…！ウチ、しっかり皆さんの安全を守ります…！）' },
+                { char: 'linda', text: '皆さん、こんにちは。風紀委員のリンダです。このフェスでは警備スタッフとして、皆さんの安全を第一に努めさせていただきます。' },
                 { char: 'oto', text: 'みんな揃ったね！心強いな〜！とにかく、みんなにお願いがあるんだけど…' },
                 {
                     char: 'oto',
@@ -271,41 +273,54 @@
                 { char: 'motoji', text: 'なんてこったい、それならSTRiNG5さんなんてどうです！？生演奏が本当に最高で…激推しくんです！' },
                 { char: 'yui', text: 'STRiNG5さん！知ってる！ぴく*さんのギター、かっこいいよね！' },
                 { char: 'oto', text: 'いいね！YouTubeあったよ！みんなも見てみて！\nhttps://www.youtube.com/@STRINGSfrom2024' },
-                { char: 'penguin', text: 'わあ、すごいですね！フェスがもっと盛り上がりそうです！' },
-                { char: 'oto', text: 'よし、ウチが連絡してみる！みんな、成功を祈ってて！' },
-                { char: 'system', text: '（数時間後…）' },
-                { char: 'oto', text: 'みんなー！STRiNG5さん、出演OKだって！やったー！！🎉' },
-                { char: 'kawashii', text: 'おお！やったな！これは派手なステージにしがいがあるぜ！' }
+                { 
+                    char: 'penguin', 
+                    text: 'わあ、すごいですね！フェスがもっと盛り上がりそうです！',
+                    choices: [
+                        { text: '生演奏、絶対盛り上がる！', next: 'ep2_continue' },
+                        { text: 'このバンド、気になる！', next: 'ep2_continue' }
+                    ]
+                }
             ],
             ep3_script: [
                 { char: 'oto', text: 'STRiNG5さん、決まって嬉しい！もう一組、青春って感じの熱いバンドも呼びたいなー！' },
                 { char: 'oto', text: 'VRロックバンドの『PHANTOM』さんはどうかな？' },
-                { char: 'akira', text: 'PHANTOMか、いいな。彼らの音は魂に響く。このフェスにぴったりだ。' },
-                { char: 'yui', text: 'わ、MV見たけど、GtVo.のふぁんさん、熱いね！青春って感じ！このMVだよ！\nhttps://www.youtube.com/@phantom1552' },
-                { char: 'motoji', text: 'うわー！推しと推しがコラボしやがる…！これは撮るしかない！' },
-                { char: 'oto', text: 'でしょでしょ！よし、またまたウチが交渉してくる！' },
-                { char: 'system', text: '（また数時間後…）' },
-                { char: 'oto', text: 'PHANTOMさんも出演決定！奇跡だ…！最高の夏になる予感しかしない！' }
+                { 
+                    char: 'akira', 
+                    text: 'PHANTOMか、いいな。彼らの音は魂に響く。このフェスにぴったりだ。',
+                    choices: [
+                        { text: '熱いバンド、いいね！', next: 'ep3_continue' },
+                        { text: 'ぜひ呼んでほしい！', next: 'ep3_continue' }
+                    ]
+                },
             ],
             ep4_script: [
                 { char: 'oto', text: 'ねえねえみんな、実は…みんなに内緒で動いてたんだけど…サプライズがあるんだ！' },
                 { char: 'yui', text: 'え、なになに！？' },
                 { char: 'oto', text: 'VTuberバンドの『LAUTRIV』さんの出演が決定しましたー！！！' },
-                { char: 'penguin', text: 'えええ！？ゆめ心中さんと頬白ギンコさんのいるあの…！？す、すごいです…！' },
-                { char: 'susukinitsuki', text: 'わ、豪華！どんどんすごいことになっていくね！' },
-                { char: 'yui', text: '本当に！？豪華すぎる！' },
-                { char: 'oto', text: 'うん！こんなに素敵なアーティストさんたちが集まってくれて…最高の思い出が作れそうだね！' }
+                { char: 'penguin', text: 'えええ！？Vo.ゆめ心中さん、Gt.空位さん、Ba.渡辺秋穂さん、Dr.頬白ギンコさんのいるあの…！？す、すごいです…！' },
+                { 
+                    char: 'susukinitsuki', 
+                    text: 'わ、豪華！どんどんすごいことになっていくね！',
+                    choices: [
+                        { text: 'サプライズすぎる！', next: 'ep4_continue' },
+                        { text: 'フェスがどんどん豪華になる！', next: 'ep4_continue' }
+                    ]
+                },
             ],
             ep5_script: [
                 { char: 'susukinitsuki', text: '音楽はすごいことになってきたけど、演劇パートも負けてられないよね。' },
                 { char: 'oto', text: '実は、七不思議探索のナビゲート役として、VR演劇で活躍してる『劇団テアドルチェ』さんに協力してもらえることになったんだ！' },
                 { char: 'system', text: 'おとちゃんが劇団テアドルチェをグループに招待しました。' },
                 { char: 'system', text: '（テアドルチェの誰か）が参加しました。' },
-                { char: 'system', text: '「え、そのフェスってヨイソラ高校でやるの？私たち、3組だけど！？」' },
-                { char: 'yui', text: 'えー！マジで！？同じ学校だったんだ！' },
-                { char: 'motoji', text: 'そういえば、放課後いつも練習してる人たち、見かけてたかも…！まさかテアドルチェさんだったなんて！' },
-                { char: 'penguin', text: 'すごい偶然ですね！ウチ、なんだか感動しちゃいました…！' },
-                { char: 'oto', text: 'すごい偶然！最高の青春を、この学校で一緒に作ろうって伝えたよ！' }
+                { 
+                    char: 'system', 
+                    text: '「え、そのフェスってヨイソラ高校でやるの？私たち、3組だけど！？」',
+                    choices: [
+                        { text: 'すごい偶然！', next: 'ep5_continue' },
+                        { text: 'これは運命だ！', next: 'ep5_continue' }
+                    ]
+                },
             ],
             ep6_script: [
                 { char: 'kawashii', text: 'ステージ装飾、最終調整完了！ドカンと派手にいくぜ！' },
@@ -315,11 +330,14 @@
                 { char: 'motoji', text: 'カメラもレンズも準備万端！みんなの最高の表情、待ってるよ！' },
                 { char: 'penguin', text: '警備ルート、最終確認しました！皆さんの安全はウチが守ります！' },
                 { char: 'kagekin', text: 'フフフ…ミーはついに完成させたぞ！夏を終わらせるのではなく、夏そのものを打倒するための最終兵器、世界クーラーを！' },
-                { char: 'yui', text: 'えぇ！？なにそれ！？' },
-                { char: 'akira', text: '…いや、夏は終わらせたくないだけで、倒さなくていいんだが。' },
-                { char: 'oto', text: 'もー、カゲキンは！でも、みんな準備万端だね！いよいよだね！ **9月23日、18:30に校門前集合！** 絶対に遅れないでね！' },
-                { char: 'system', text: '（えいえいおー！のスタンプが飛び交う）' },
-                { char: 'system', text: 'To be continued...', next: 'show_logo' }
+                { 
+                    char: 'yui', 
+                    text: 'えぇ！？なにそれ！？',
+                    choices: [
+                        { text: '夏を倒さないで！', next: 'ep6_continue' },
+                        { text: '面白そうだから見たいかも…', next: 'ep6_continue' }
+                    ]
+                },
             ]
         };
 
@@ -363,7 +381,37 @@
                 { char: 'yui', text: 'みんなでやれば、絶対成功するよ！' },
                 { char: 'akira', text: 'ああ。忘れられない一夜にしてやるさ。' },
                 { char: 'kabochashinshi', text: 'これぞ青春…！私も全力でサポートさせてもらうよ、一人の“生徒”としてね！' },
-                { char: 'oto', text: 'じゃあ、作戦会議はここまで！詳細はまた連絡するね。9月23日、ヨイソラ高校で待ってる！ #YOISORAFES' },
+                { char: 'oto', text: 'じゃあ、作戦会議はここまで！詳細はまた連絡するね。9月23日、ヨイソラ高校で待ってる！ #YOISORAFES', next: 'end_of_episode' },
+            ],
+            ep2_continue: [
+                { char: 'oto', text: 'よし、ウチが連絡してみる！みんな、成功を祈ってて！' },
+                { char: 'system', text: '（数時間後…）' },
+                { char: 'oto', text: 'みんなー！STRiNG5さん、出演OKだって！やったー！！🎉' },
+                { char: 'kawashii', text: 'おお！やったな！これは派手なステージにしがいがあるぜ！', next: 'end_of_episode' }
+            ],
+            ep3_continue: [
+                { char: 'yui', text: 'わ、MV見たけど、GtVo.のふぁんさん、熱いね！青春って感じ！このMVだよ！\nhttps://www.youtube.com/@phantom1552' },
+                { char: 'motoji', text: 'うおおお！！ 熱いロックバンドだね！ これは撮るしかない！' },
+                { char: 'oto', text: 'でしょでしょ！よし、またまたウチが交渉してくる！' },
+                { char: 'system', text: '（また数時間後…）' },
+                { char: 'oto', text: 'PHANTOMさんも出演決定！奇跡だ…！最高の夏になる予感しかしない！', next: 'end_of_episode' }
+            ],
+            ep4_continue: [
+                { char: 'yui', text: '本当に！？豪華すぎる！' },
+                { char: 'oto', text: 'うん！こんなに素敵なアーティストさんたちが集まってくれて…最高の思い出が作れそうだね！', next: 'end_of_episode' }
+            ],
+            ep5_continue: [
+                { char: 'yui', text: 'えー！マジで！？同じ学校だったんだ！' },
+                { char: 'motoji', text: 'そういえば、放課後いつも練習してる人たち、見かけてたかも…！まさかテアドルチェさんだったなんて！' },
+                { char: 'penguin', text: 'すごい偶然ですね！ウチ、なんだか感動しちゃいました…！' },
+                { char: 'oto', text: 'すごい偶然！最高の青春を、この学校で一緒に作ろうって伝えたよ！', next: 'end_of_episode' }
+            ],
+            ep6_continue: [
+                { char: 'akira', text: '…いや、夏は終わらせたくないだけで、倒さなくていいんだが。' },
+                { char: 'oto', text: 'もー、カゲキンは！でも、みんな準備万端だね！いよいよだね！ **9月23日、18:30に校門前集合！** 絶対に遅れないでね！' },
+                { char: 'system', text: '（えいえいおー！のスタンプが飛び交う）', next: 'end_of_episode' }
+            ],
+            end_of_episode: [
                 { char: 'system', text: 'To be continued...', next: 'show_logo' }
             ],
             show_logo: [
@@ -376,6 +424,9 @@
         let currentScript = scripts.ep1_script;
         let soundReady = false;
         let allEpisodesUnlocked = false;
+        let isScriptPlaying = false;
+        let playbackId = 0;
+
 
         document.body.addEventListener('click', () => {
             if (!soundReady) {
@@ -406,9 +457,10 @@
             }
         }
 
-        function addMessage(char, text) {
+        function addMessage(char, text, localPlaybackId) {
             return new Promise(resolve => {
                 setTimeout(() => {
+                    if (playbackId !== localPlaybackId) return;
                     const character = characters[char];
                     const messageWrapper = document.createElement('div');
                     messageWrapper.className = 'flex items-start gap-3 fade-in';
@@ -455,9 +507,10 @@
             });
         }
         
-        function addSystemMessage(text) {
+        function addSystemMessage(text, localPlaybackId) {
              return new Promise(resolve => {
                 setTimeout(() => {
+                    if (playbackId !== localPlaybackId) return;
                     const messageWrapper = document.createElement('div');
                     messageWrapper.className = 'text-center text-sm text-purple-300 py-2 fade-in';
                     messageWrapper.textContent = text;
@@ -468,9 +521,10 @@
              });
         }
 
-        function showLogo() {
+        function showLogo(localPlaybackId) {
             return new Promise(resolve => {
                 setTimeout(() => {
+                    if (playbackId !== localPlaybackId) return;
                     const logoContainer = document.createElement('div');
                     logoContainer.className = 'text-center mt-4 fade-in';
                     const logoLink = document.createElement('a');
@@ -489,8 +543,8 @@
             });
         }
         
-        function addFinalMessage() {
-            return addMessage('oto', 'フェスの最新情報やグッズのことは、公式サイトをチェックしてね！');
+        function addFinalMessage(localPlaybackId) {
+            return addMessage('oto', 'フェスの最新情報やグッズのことは、公式サイトをチェックしてね！\nhttps://yoisorafes.studio.site/', localPlaybackId);
         }
 
         function showChoices(choices) {
@@ -505,7 +559,9 @@
             });
         }
 
-        function handleChoice(nextBranchKey) {
+        async function handleChoice(nextBranchKey) {
+            if (isScriptPlaying) return;
+
             choicesContainer.innerHTML = '';
             const userChoiceText = event.target.textContent;
             const userMessageWrapper = document.createElement('div');
@@ -516,47 +572,61 @@
             userMessageWrapper.appendChild(bubble);
             chatArea.appendChild(userMessageWrapper);
             chatArea.scrollTop = chatArea.scrollHeight;
+            
             currentScript = storyBranches[nextBranchKey];
-            playCurrentScript();
+            await playCurrentScript(playbackId);
         }
 
-        async function playCurrentScript() {
+        async function playCurrentScript(localPlaybackId) {
+            if (playbackId !== localPlaybackId) return;
+            
+            isScriptPlaying = true;
+            renderEpisodes();
+
             for (const line of currentScript) {
+                if (playbackId !== localPlaybackId) return;
+
                 if (line.char === 'system') {
-                    await addSystemMessage(line.text);
+                    await addSystemMessage(line.text, localPlaybackId);
                 } else if (line.char === 'logo') {
-                    await showLogo();
+                    await showLogo(localPlaybackId);
                 } else if (line.char === 'final_message') {
-                    await addFinalMessage();
+                    await addFinalMessage(localPlaybackId);
                 } else {
-                    await addMessage(line.char, line.text);
+                    await addMessage(line.char, line.text, localPlaybackId);
                 }
+
+                if (playbackId !== localPlaybackId) return;
+
                 if (line.choices) {
+                    isScriptPlaying = false;
+                    renderEpisodes();
                     showChoices(line.choices);
-                    return; // Stop after showing choices
+                    return;
                 }
                 if (line.next) {
                     currentScript = storyBranches[line.next];
-                    await playCurrentScript(); // Recurse for the next part
+                    await playCurrentScript(localPlaybackId);
                     return;
                 }
             }
+            
+            isScriptPlaying = false;
+            renderEpisodes();
         }
 
-        function loadEpisode(episode) {
+        async function loadEpisode(episode) {
+            if (isScriptPlaying && currentEpisodeId === episode.id) return;
             if (!scripts[episode.script]) return;
 
+            playbackId++;
             currentEpisodeId = episode.id;
             currentScript = scripts[episode.script];
             
             chatArea.innerHTML = '';
             choicesContainer.innerHTML = '';
 
-            playCurrentScript();
-            renderEpisodes();
-            if (window.innerWidth < 768) {
-                sidePanelContainer.classList.add('hidden');
-            }
+            await playCurrentScript(playbackId);
         }
         
         // Episode Navigation Logic
@@ -588,8 +658,8 @@
                         <div class="text-xs text-green-400">公開中</div>
                     `;
                     episodeElement.className = `block w-full p-3 rounded-lg bg-slate-700/80 hover:bg-slate-600/80 transition ${episode.id === currentEpisodeId ? 'ring-2 ring-pink-500' : ''}`;
-                    if(!scripts[episode.script]) {
-                        episodeElement.className += ' opacity-50 cursor-not-allowed';
+                    if(!scripts[episode.script] || (isScriptPlaying && currentEpisodeId === episode.id)) {
+                        episodeElement.className += ' opacity-50 cursor-wait';
                     }
                 } else {
                     episodeElement.href = '#';
